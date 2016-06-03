@@ -1,0 +1,19 @@
+#Here will be all my code for the Twitter Robot
+#I need import subprecess
+#I need impor request
+#I need impor from request_oauthlib import OAuth1
+#I need to have the API_KEY and API_SECRET from Twitter
+
+#Here are some of the fuctions that I need in this proyect
+#I neeed a fuction that search for the 20 first tuits with an specific hashtag(request.get) in Twitter (en english)
+#I need a fuction that writ that list of tuits in a file
+#I need a fuction that read that list of tuits 
+#I neeed a fuction that be able to follow an user in Twitter
+#I need a fuction that be able to send a post in Twitter taggin the user
+
+#The main fuction needs to ask the user wich hashtag want to search
+#The main fuction needs to ask the user if they want to do someting with the user od the tuits
+#If the user choose follow the user, do that
+#If the user choose send a tuit to the user ask wich message
+#Send the message
+#Clean the txt file with the tuits
