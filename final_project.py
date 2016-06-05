@@ -1,16 +1,17 @@
-from security_info import TWITTER_API_KEY, TWITTER_API_SECRET
+# encoding: utf-8
+from security_info import *
 import subprocess
 import requests 
-from requests_oauthlib import OAuth1
+from requests_oauthlib import OAuth1, OAuth1Session
 import os.path
 
 URL = "https://api.twitter.com/1.1/search/tweets.json"
-API_KEY = TWITTER_API_KEY
+API_KEY = TWITTER_API_KEY 
 API_SECRET = TWITTER_API_SECRET
 my_tweets = []
 
 def tweet_string(tweet):
-        return "* %s : %s \n" %(tweet["user"]["name"], tweet["text"]) 
+    return "* %s, %s, %s : %s \n" %(tweet["id_str"], tweet["user"]["name"],tweet["user"]["screen_name"], tweet["text"])  
 
 def search_hashtag():
     global my_tweets
@@ -21,8 +22,22 @@ def search_hashtag():
     search_results = response.json()
     my_tweets = search_results["statuses"]
     for tweet in my_tweets:
-        #print tweet
         print tweet_string(tweet)
+
+def post_tweet(twitter, tweet):
+    message = raw_input("Please type the message of your tweet. Remember not more that 140 caracters ")
+    username = "@%s" %(tweet["user"]["screen_name"])
+    status = ("%s %s") %(username, message)
+    in_replay_to_status_id = tweet["id_str"]
+    params = {"status": status, "in_replay_to_status_id": in_replay_to_status_id}
+    response = twitter.post("https://api.twitter.com/1.1/statuses/update.json", params)
+    print "You send the tweet: %s" %(status)
+
+def follow_user(twitter, tweet):
+    username = "@%s" %(tweet["user"]["screen_name"])
+    params = {"screen_name": username}
+    response = twitter.post("https://api.twitter.com/1.1/friendships/create.json", params)
+    print "Now you are following %s" %(username)
 
 
 def write_list():
@@ -36,25 +51,70 @@ def read_list():
         for line in my_file:
             print line.strip()
 
+def show_menu():
+    user_choice = raw_input("""
+        This is your Twitter Robot. What do you want to do:
+            1. Search for a Hashtag
+            2. Follow an user
+            3. Send a tweet to a user
+            4. Write your tweets in a .txt
+            5. Read your .txt """)
+    return user_choice
+
 
 def main():
-    user_choice = raw_input("""
-                            This is your Twitter Robot. What do you want to do:
-                            1. Search for a Hashtag
-                            2. Read your tweets in .txt
-                            3. Follow an user
-                            4. Send a tweet to an user  """)
+    global my_tweets
+    twitter = OAuth1Session(API_KEY, client_secret=API_SECRET, resource_owner_key=TWITTER_ACCESS_TOKEN, resource_owner_secret=TWITTER_TOKEN_SECRET)
 
-    if user_choice == "1":
-        search_hashtag()
-        write_list()
-    if user_choice == "2":
-        if os.path.isfile('/Users/cristina/Source/final_project/tuits_list.txt') is False:
-            print "You dont haver a file with tweets to show"
+    while True:
+
+        user_choice = show_menu()
+
+        if user_choice == "1":
+            search_hashtag()
+
+        elif user_choice == "2":
+            if len(my_tweets) == 0:
+                print "Please search for a hashtag first. You only can send a tweet from your search"
+            else:
+                index_tweet = -1
+                while index_tweet < 0 or index_tweet > len(my_tweets) - 1:
+                    index_tweet = int(raw_input("Please select a user from your list of tweets. Choose from 0 - %s: " %(len(my_tweets)-1)))
+                follow_user(twitter, my_tweets[index_tweet])
+            
+
+        elif user_choice == "3":
+            if len(my_tweets) == 0:
+                print "Please search for a hashtag first. You only can send a tweet from your search"
+            else:
+                index_tweet = -1
+                while index_tweet < 0 or index_tweet > len(my_tweets) - 1:
+                    index_tweet = int(raw_input("Please select a tweet to replay from your list. Choose from 0 - %s: " %(len(my_tweets)-1)))
+                tweet = tweet_string(my_tweets[index_tweet])
+                confirmation = raw_input(u"You are gonna send a tweet to %s. Are you sure: Y or N: " %(tweet))
+                if confirmation.upper() == "Y":
+                    post_tweet(twitter, my_tweets[index_tweet])
+                else:
+                    pass
+            
+        
+        elif user_choice == "4":
+            if len(my_tweets) == 0:
+                print "Please search for a hashtag first. You only can save tweets from your search list"
+            else:
+                write_list()
+
+        elif user_choice == "5":
+            if os.path.isfile('/Users/cristina/Source/final_project/tuits_list.txt') is False:
+                print "You dont haver a file with tweets to show"
+            else:
+                read_list()
+            
+
         else:
-            read_list()
-    else:
-        pass
+            break
+
+
 
 
 if __name__ == '__main__':
