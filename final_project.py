@@ -80,7 +80,12 @@ def main():
                 index_tweet = -1
                 while index_tweet < 0 or index_tweet > len(my_tweets) - 1:
                     index_tweet = int(raw_input("Please select a user from your list of tweets. Choose from 0 - %s: " %(len(my_tweets)-1)))
-                follow_user(twitter, my_tweets[index_tweet])
+                tweet = tweet_string(my_tweets[index_tweet])
+                confirmation = raw_input(u"You are gonna follow to %s. Are you sure: Y or N: " %(tweet))
+                if confirmation.upper() == "Y":
+                    follow_user(twitter, my_tweets[index_tweet])
+                else:
+                    pass
             
 
         elif user_choice == "3":
@@ -106,7 +111,7 @@ def main():
 
         elif user_choice == "5":
             if os.path.isfile('/Users/cristina/Source/final_project/tuits_list.txt') is False:
-                print "You dont haver a file with tweets to show"
+                print "You dont have a file with tweets to show"
             else:
                 read_list()
             
