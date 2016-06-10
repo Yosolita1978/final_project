@@ -24,8 +24,31 @@ def search_hashtag():
     for tweet in my_tweets:
         print tweet_string(tweet)
 
+def your_messages():
+    user_message1 = "Hello! We are excited to introduce @Tejiendo_MiVida Crochet, very soon an online store for handmade crochet"
+    user_message2 = "HI, just saw that you love to crochet so I wanted to introduce you to my work in @Tejiendo_MiVida"
+    user_message3 = "Hi! Amazing work!. After seeing your work, I will never look at a crochet in the same way!"
+    user_message = raw_input("""
+    This are your messages:
+
+    1. %s
+
+    2. %s
+
+    3. %s
+     """ %(user_message1, user_message2, user_message3))
+    if user_message == "1":
+        return user_message1
+    elif user_message == "2":
+        return user_message2
+    elif user_message == "3":
+        return user_message3
+    else:
+        return raw_input("Please type the message of your tweet. Remember not more that 140 caracters ")
+
+
 def post_tweet(twitter, tweet):
-    message = raw_input("Please type the message of your tweet. Remember not more that 140 caracters ")
+    message = your_messages()
     username = "@%s" %(tweet["user"]["screen_name"])
     status = ("%s %s") %(username, message)
     in_replay_to_status_id = tweet["id_str"]
@@ -81,7 +104,7 @@ def main():
                 while index_tweet < 0 or index_tweet > len(my_tweets) - 1:
                     index_tweet = int(raw_input("Please select a user from your list of tweets. Choose from 0 - %s: " %(len(my_tweets)-1)))
                 tweet = tweet_string(my_tweets[index_tweet])
-                confirmation = raw_input(u"You are gonna follow to %s. Are you sure: Y or N: " %(tweet))
+                confirmation = raw_input(u"You are gonna follow to %s. Are you sure: Y or N: " %(tweet.decode("utf-8")))
                 if confirmation.upper() == "Y":
                     follow_user(twitter, my_tweets[index_tweet])
                 else:
@@ -96,7 +119,7 @@ def main():
                 while index_tweet < 0 or index_tweet > len(my_tweets) - 1:
                     index_tweet = int(raw_input("Please select a tweet to replay from your list. Choose from 0 - %s: " %(len(my_tweets)-1)))
                 tweet = tweet_string(my_tweets[index_tweet])
-                confirmation = raw_input(u"You are gonna send a tweet to %s. Are you sure: Y or N: " %(tweet))
+                confirmation = raw_input(u"You are gonna send a tweet to %s. Are you sure: Y or N: " %(tweet.decode("utf-8")))
                 if confirmation.upper() == "Y":
                     post_tweet(twitter, my_tweets[index_tweet])
                 else:
