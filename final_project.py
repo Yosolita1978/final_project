@@ -11,22 +11,21 @@ API_SECRET = TWITTER_API_SECRET
 my_tweets = []
 
 def tweet_string(tweet):
-    return "* %s, %s, %s : %s \n" %(tweet["id_str"], tweet["user"]["name"],tweet["user"]["screen_name"], tweet["text"])  
+    return u"* %s, %s, %s : %s \n" %(tweet["id_str"], tweet["user"]["name"],tweet["user"]["screen_name"], tweet["text"])  
 
-def search_hashtag():
-    global my_tweets
+def search_hashtag(hashtag=None):
     auth = OAuth1(API_KEY, API_SECRET)
-    hashtag = raw_input("Please type the #hashtag that you want to search: ")
+    if hashtag is None:
+        hashtag = raw_input("Please type the #hashtag that you want to search: ")
     params = {"q": hashtag, "count": 20, "lang":"en"}
     response = requests.get(URL, params=params, auth=auth)
     search_results = response.json()
     my_tweets = search_results["statuses"]
-    for tweet in my_tweets:
-        print tweet_string(tweet)
+    return my_tweets
 
 def your_messages():
-    user_message1 = "Hello! We are excited to introduce @Tejiendo_MiVida Crochet, very soon an online store for handmade crochet"
-    user_message2 = "HI, just saw that you love to crochet so I wanted to introduce you to my work in @Tejiendo_MiVida"
+    user_message1 = "Hello! We are excited to introduce @Tejiendo_MiVida Crochet, very soon an online store"
+    user_message2 = "HI, just saw that you love to crochet so I wanted to introduce you @Tejiendo_MiVida"
     user_message3 = "Hi! Amazing work!. After seeing your work, I will never look at a crochet in the same way!"
     user_message = raw_input("""
     This are your messages:
@@ -36,6 +35,9 @@ def your_messages():
     2. %s
 
     3. %s
+
+    4. Your personal message
+
      """ %(user_message1, user_message2, user_message3))
     if user_message == "1":
         return user_message1
@@ -81,7 +83,9 @@ def show_menu():
             2. Follow an user
             3. Send a tweet to a user
             4. Write your tweets in a .txt
-            5. Read your .txt """)
+            5. Read your .txt 
+
+            """)
     return user_choice
 
 
@@ -94,7 +98,10 @@ def main():
         user_choice = show_menu()
 
         if user_choice == "1":
-            search_hashtag()
+            my_tweets = search_hashtag()
+            for tweet in my_tweets:
+                print tweet_string(tweet)
+
 
         elif user_choice == "2":
             if len(my_tweets) == 0:
@@ -104,7 +111,7 @@ def main():
                 while index_tweet < 0 or index_tweet > len(my_tweets) - 1:
                     index_tweet = int(raw_input("Please select a user from your list of tweets. Choose from 0 - %s: " %(len(my_tweets)-1)))
                 tweet = tweet_string(my_tweets[index_tweet])
-                confirmation = raw_input(u"You are gonna follow to %s. Are you sure: Y or N: " %(tweet.decode("utf-8")))
+                confirmation = raw_input((u"You are gonna follow to %s. Are you sure: Y or N: " %(tweet)).encode("utf-8"))
                 if confirmation.upper() == "Y":
                     follow_user(twitter, my_tweets[index_tweet])
                 else:
@@ -119,7 +126,7 @@ def main():
                 while index_tweet < 0 or index_tweet > len(my_tweets) - 1:
                     index_tweet = int(raw_input("Please select a tweet to replay from your list. Choose from 0 - %s: " %(len(my_tweets)-1)))
                 tweet = tweet_string(my_tweets[index_tweet])
-                confirmation = raw_input(u"You are gonna send a tweet to %s. Are you sure: Y or N: " %(tweet.decode("utf-8")))
+                confirmation = raw_input((u"You are gonna send a tweet to %s. Are you sure: Y or N: " %(tweet)).encode("utf-8"))
                 if confirmation.upper() == "Y":
                     post_tweet(twitter, my_tweets[index_tweet])
                 else:
