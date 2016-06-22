@@ -1,0 +1,70 @@
+{% extends "_base.html" %}
+{% block article %}
+
+
+            <article class="col-md-8">
+                <h2>Send a Message</h2>
+                
+                <p>The third and final thing that the Twitter Robot does is that you can send a sepecific message to a specific user.</p> 
+                
+
+                <div class="list-group-item">
+                {% include "_tweet.html" %}
+                </div>
+
+                <h3>These are your options for messages</h3>
+                
+                <ol class="predefined-messages">
+                <li class="list-group-item"><p>Hello! We are excited to introduce @Tejiendo_MiVida Crochet, very soon an online store</p>
+                <form method="POST" action="/send/" class="form-inline">
+                <input type="hidden" name="id" value="{{tweet.id_str}}"></input>
+                <input type="hidden" name="message" value="Hello! We are excited to introduce @Tejiendo_MiVida Crochet, very soon an online store"></input>
+                <button class="btn btn-primary btn-sm">SEND</button>
+                </form>
+                </li>
+                
+                
+                <li class="list-group-item"><p>HI, just saw that you love to crochet so I wanted to introduce you @Tejiendo_MiVida</p>
+                <form method="POST" action="/send/" class="form-inline">
+                <input type="hidden" name="id" value="{{tweet.id_str}}">
+                <input type="hidden" name="message" value="HI, just saw that you love to crochet so I wanted to introduce you @Tejiendo_MiVida"></input>
+                <button class="btn btn-primary btn-sm">SEND</button>
+                </form>
+                </li>
+                
+                <li class="list-group-item"><p>Hi! Amazing work!. After seeing your work, I will never look at a crochet in the same way!</p>
+                <form method="POST" action="/send/" class="form-inline">
+                <input type="hidden" name="id" value="{{tweet.id_str}}">
+                <input type="hidden" name="message" value="Hi! Amazing work!. After seeing your work, I will never look at a crochet in the same way!"></input>
+                <button class="btn btn-primary btn-sm">SEND</button>
+                </form>
+                </li>
+
+                
+                <li class="list-group-item"><p>Send your own message</p>
+                <form method="POST" action="/send/">
+                <input type="hidden" name="id" value="{{tweet.id_str}}">
+                <div class="row">
+                <div class="col-xs-8">
+                <input type="text" name="message" class="form-control" placeholder="Remember the 140 characters" value="{{message}}"></input>
+                </div>
+                <div class="col-xs-4"><button class="btn btn-primary btn-sm">SEND</button></div>
+                </div>
+                </form>
+                </li>
+                
+                
+
+
+                </ol>
+
+                
+                
+             
+
+
+          
+
+            </article>
+  
+{% endblock %}    

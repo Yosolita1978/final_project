@@ -1,0 +1,29 @@
+{% extends "_base.html" %}
+{% block article %}
+
+
+            <article class="col-md-8">
+                <h2>Follow an User</h2>
+                
+                <p>The second thing that the Twitter Robot does is that you can follow a specific user.</p> 
+                
+
+                <div class="list-group-item">
+                {% include "_tweet.html" %}
+                </div>
+
+                <p>Are you sure you want to follow that User?</p>
+                <form method="POST" action="/follow/" class="form-inline">
+                <input type="hidden" name="id" value="{{tweet.id_str}}">
+                <button class="btn btn-primary btn-sm">YES</button>
+                <a href="/" class="btn btn-sm">NO</a> 
+                
+                
+                </form>
+
+
+          
+
+            </article>
+  
+{% endblock %}    

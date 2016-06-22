@@ -49,20 +49,21 @@ def your_messages():
         return raw_input("Please type the message of your tweet. Remember not more that 140 caracters ")
 
 
-def post_tweet(twitter, tweet):
-    message = your_messages()
+def post_tweet(twitter, tweet, message=None):
+    if message is None:
+        message = your_messages()
     username = "@%s" %(tweet["user"]["screen_name"])
     status = ("%s %s") %(username, message)
     in_replay_to_status_id = tweet["id_str"]
     params = {"status": status, "in_replay_to_status_id": in_replay_to_status_id}
     response = twitter.post("https://api.twitter.com/1.1/statuses/update.json", params)
-    print "You send the tweet: %s" %(status)
+    return "You send the tweet: %s" %(status)
 
 def follow_user(twitter, tweet):
     username = "@%s" %(tweet["user"]["screen_name"])
     params = {"screen_name": username}
     response = twitter.post("https://api.twitter.com/1.1/friendships/create.json", params)
-    print "Now you are following %s" %(username)
+    return "Now you are following %s" %(username)
 
 
 def write_list():
@@ -88,10 +89,14 @@ def show_menu():
             """)
     return user_choice
 
+def get_twitter_session():
+    return OAuth1Session(API_KEY, client_secret=API_SECRET, resource_owner_key=TWITTER_ACCESS_TOKEN, resource_owner_secret=TWITTER_TOKEN_SECRET)
+
+
 
 def main():
     global my_tweets
-    twitter = OAuth1Session(API_KEY, client_secret=API_SECRET, resource_owner_key=TWITTER_ACCESS_TOKEN, resource_owner_secret=TWITTER_TOKEN_SECRET)
+    twitter = get_twitter_session()
 
     while True:
 
@@ -113,7 +118,7 @@ def main():
                 tweet = tweet_string(my_tweets[index_tweet])
                 confirmation = raw_input((u"You are gonna follow to %s. Are you sure: Y or N: " %(tweet)).encode("utf-8"))
                 if confirmation.upper() == "Y":
-                    follow_user(twitter, my_tweets[index_tweet])
+                    print follow_user(twitter, my_tweets[index_tweet])
                 else:
                     pass
             
@@ -128,7 +133,7 @@ def main():
                 tweet = tweet_string(my_tweets[index_tweet])
                 confirmation = raw_input((u"You are gonna send a tweet to %s. Are you sure: Y or N: " %(tweet)).encode("utf-8"))
                 if confirmation.upper() == "Y":
-                    post_tweet(twitter, my_tweets[index_tweet])
+                    print post_tweet(twitter, my_tweets[index_tweet])
                 else:
                     pass
             
